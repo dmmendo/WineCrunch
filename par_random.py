@@ -13,8 +13,8 @@ import time
 from itertools import permutations
 from itertools import combinations
 
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error
 
 tf.enable_v2_behavior()
 
@@ -24,7 +24,7 @@ def get_test_partition(data,split):
   return data[int(split*len(data)):len(data)]
 
 ds_train, ds_info = tfds.load(
-    'iris',
+    'wine_quality/red',
     split=['train'],
     shuffle_files=False,
     as_supervised=True,
@@ -61,8 +61,8 @@ def run_trial(profile_features,labels,this_train_sizes,results,num_trials,n):
         cur_X_train, cur_X_test, cur_y_train, cur_y_test = train_test_split(profile_features,labels,test_size=1-this_train_sizes[i],random_state = n)
       else:
         cur_X_train, cur_y_train = profile_features,labels
-      reg = RandomForestClassifier().fit(cur_X_train,cur_y_train)
-      results[num_trials*len(this_train_sizes)*n  + j*len(this_train_sizes) + i] = Error(labels,reg.predict(profile_features))
+      reg = RandomForestRegressor().fit(cur_X_train,cur_y_train)
+      results[num_trials*len(this_train_sizes)*n  + j*len(this_train_sizes) + i] = mean_absolute_error(labels,reg.predict(profile_features))
 
 procs = []
 for n in range(num_trials):
