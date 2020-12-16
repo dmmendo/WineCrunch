@@ -35,7 +35,7 @@ ds_numpy = tfds.as_numpy(ds_train)
 profile_features = []
 labels = []
 for ex in ds_numpy[0]:
-  profile_features.append(ex[0])
+  profile_features.append([ex[0][entry] for entry in ex[0]])
   labels.append(ex[1])
 
 print("dataset size:",len(labels))
@@ -46,7 +46,7 @@ def Error(labels,preds):
 """## Limited Data Experiments"""
 print("begin experiment")
 num_trials = 32
-sub_proc_trials = 100000
+sub_proc_trials = 1000
 this_train_sizes = np.linspace(0.01,1,100)
 results = Manager().list([0 for i in range(sub_proc_trials*num_trials*len(this_train_sizes))])
 
